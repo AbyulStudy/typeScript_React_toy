@@ -77,6 +77,11 @@ const Page: React.FC = () => {
     console.log(
       '[handleSendTransaction]======================================='
     );
+    try {
+      await ttkToken?.transfer(targetAccount, sendTokenBalance * 10 ** 5);
+    } catch (err) {
+      throw new Error('[handleSendTransaction] transaction Error');
+    }
   };
 
   return (
