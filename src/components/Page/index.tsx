@@ -1,8 +1,10 @@
 /* eslint-disable no-console */
 import { ExternalProvider, JsonRpcFetchFunc } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
+import { Contract, ethers } from 'ethers';
 import React, { useState } from 'react';
 import { injectedConnector } from '../../connector';
+import { ttkabi } from '../../sol/ttkabi';
 // import Web3 from 'web3';
 import { Container } from './styles';
 
@@ -20,6 +22,7 @@ const Page: React.FC = () => {
   const [metaProvider, setMetaProvider] = useState<
     ExternalProvider | JsonRpcFetchFunc
   >({});
+  const [ttkToken, setTtkToken] = useState<Contract>();
   const [balance, setBalacne] = useState<number>(0);
   const [symbol, setSymbol] = useState<string>(' -');
   const [sendTokenBalance, setSendTokenBalance] = useState<number>(0);
@@ -48,6 +51,14 @@ const Page: React.FC = () => {
   };
   const contractTTK = async () => {
     console.log('[contractTTK]=======================================');
+    const conProvider = new ethers.providers.Web3Provider(metaProvider);
+    const signer = await conProvider.getSigner();
+    const ttkTokenContract = new ethers.Contract(
+      `${process.env.REACT_APP_CONTRACT}`,
+      ttkabi,
+      signer
+    );
+    setTtkToken(ttkTokenContract);
   };
   const accountBalance = async () => {
     console.log('[accountBalance]=======================================');
