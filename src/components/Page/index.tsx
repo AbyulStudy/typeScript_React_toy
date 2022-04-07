@@ -13,8 +13,8 @@ declare let window: (Window & typeof globalThis) | any;
 
 // eslint-disable-next-line react/function-component-definition
 const Page: React.FC = () => {
-  const { account, chainId, active, activate } = useWeb3React();
-
+  const { account, chainId, activate } = useWeb3React();
+  const [active, setActive] = useState<string>('none');
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [targetAccount, setTargetAccount] = useState<string>(
     `${process.env.REACT_APP_TARGETADDRESS}`
@@ -51,14 +51,21 @@ const Page: React.FC = () => {
   };
   const contractTTK = async () => {
     console.log('[contractTTK]=======================================');
-    const conProvider = new ethers.providers.Web3Provider(metaProvider);
-    const signer = await conProvider.getSigner();
-    const ttkTokenContract = new ethers.Contract(
-      `${process.env.REACT_APP_CONTRACT}`,
-      ttkabi,
-      signer
-    );
-    setTtkToken(ttkTokenContract);
+    try {
+      const conProvider = new ethers.providers.Web3Provider(metaProvider);
+      const signer = await conProvider.getSigner();
+      const ttkTokenContract = new ethers.Contract(
+        `${process.env.REACT_APP_CONTRACT}`,
+        ttkabi,
+        signer
+      );
+      setTtkToken(ttkTokenContract);
+      setActive('Connection success');
+    } catch {
+      throw new Error(
+        '[contractTTK] MetaMask Wallet and TTK Contract Connection Failure'
+      );
+    }
   };
   const accountBalance = async () => {
     console.log('[accountBalance]=======================================');
