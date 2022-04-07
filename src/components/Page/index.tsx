@@ -62,6 +62,15 @@ const Page: React.FC = () => {
   };
   const accountBalance = async () => {
     console.log('[accountBalance]=======================================');
+    try {
+      const balnceOfttkToken = await ttkToken?.balanceOf(account);
+      const symbolttkToken = await ttkToken?.symbol();
+      const ttkBalance = balnceOfttkToken.toNumber() / 100000;
+      setBalacne(ttkBalance);
+      setSymbol(symbolttkToken);
+    } catch (err) {
+      throw new Error('[accountBalance] no connection');
+    }
   };
 
   const handleSendTransaction = async () => {
