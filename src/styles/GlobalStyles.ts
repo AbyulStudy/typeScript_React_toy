@@ -8,7 +8,7 @@ const GlobalStyles = createGlobalStyle`
     body{
         margin: 50px auto;
         width: 500px;
-        height: 500px;
+        height: 600px;
         border: 1px solid black;
     }
 `;
