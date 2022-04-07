@@ -1,6 +1,8 @@
 /* eslint-disable no-console */
+import { ExternalProvider, JsonRpcFetchFunc } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
 import React, { useState } from 'react';
+import { injectedConnector } from '../../connector';
 // import Web3 from 'web3';
 import { Container } from './styles';
 
@@ -9,13 +11,15 @@ declare let window: (Window & typeof globalThis) | any;
 
 // eslint-disable-next-line react/function-component-definition
 const Page: React.FC = () => {
-  const { account, chainId, active } = useWeb3React();
+  const { account, chainId, active, activate } = useWeb3React();
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [targetAccount, setTargetAccount] = useState<string>(
     `${process.env.REACT_APP_TARGETADDRESS}`
   );
-
+  const [metaProvider, setMetaProvider] = useState<
+    ExternalProvider | JsonRpcFetchFunc
+  >({});
   const [balance, setBalacne] = useState<number>(0);
   const [symbol, setSymbol] = useState<string>(' -');
   const [sendTokenBalance, setSendTokenBalance] = useState<number>(0);
@@ -33,6 +37,14 @@ const Page: React.FC = () => {
 
   const activateWallet = async () => {
     console.log('[activateWallet]=======================================');
+    if (typeof window.ethereum !== 'undefined') {
+      // MetaMask is installed
+      window.ethereum.request('eth_requestAccounts');
+      setMetaProvider(window.ethereum);
+    } else {
+      throw new Error('No web3 provider detected');
+    }
+    activate(injectedConnector);
   };
   const contractTTK = async () => {
     console.log('[contractTTK]=======================================');
